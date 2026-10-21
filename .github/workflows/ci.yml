@@ -46,9 +46,15 @@ jobs:
           tar -xzf /tmp/trivy.tar.gz -C /tmp trivy
           sudo install -m 0755 /tmp/trivy /usr/local/bin/trivy
 
-      - name: Run Trivy (filesystem scan)
+      - name: Run Trivy (CRITICAL - blocking)
         run: |
-          trivy fs . --format table --severity CRITICAL,HIGH --ignore-unfixed --exit-code 0
+          trivy fs . --format table --severity CRITICAL --ignore-unfixed --exit-code 1
+
+      - name: Run Trivy (HIGH - report only)
+        if: always()
+        run: |
+          trivy fs . --format table --severity HIGH --ignore-unfixed --exit-code 0
+
 
   build-and-push:
     name: Build & Push Docker Image
