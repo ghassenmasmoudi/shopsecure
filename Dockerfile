@@ -17,4 +17,7 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 8080
 
+# Ajouter cette ligne pour satisfaire Semgrep et rendre explicite l'utilisateur non-root
+USER nginx
+
 CMD ["nginx", "-g", "daemon off;"]
