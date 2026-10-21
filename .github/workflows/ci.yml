@@ -10,9 +10,31 @@ env:
   IMAGE_NAME: shopsecure
 
 jobs:
+  # ============================================================
+  # JOB 1 : Scan de secrets (DevSecOps - Shift Left)
+  # ============================================================
+  secret-scan:
+    name: Secret Scan (Gitleaks)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Important : récupère tout l'historique Git
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ============================================================
+  # JOB 2 : Build & Push (ne s'exécute que si le scan passe)
+  # ============================================================
   build-and-push:
     name: Build & Push Docker Image
     runs-on: ubuntu-latest
+    needs: secret-scan  # ⛔ Bloquant : si secret-scan échoue, ce job ne démarre pas
 
     steps:
       - name: Checkout code
