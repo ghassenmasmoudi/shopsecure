@@ -1,70 +1,108 @@
-# Getting Started with Create React App
+# 🛒 ShopSecure — Pipeline DevSecOps pour une boutique e-commerce
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 📖 Présentation
 
-## Available Scripts
+**ShopSecure** est un projet pédagogique qui illustre la mise en place d’une chaîne de livraison logicielle sécurisée (**DevSecOps**) autour d’une application e-commerce développée avec **React** et **Nginx**, et destinée à être déployée sur **Kubernetes**.
 
-In the project directory, you can run:
+L’objectif est d’automatiser les principales étapes du cycle de livraison logicielle : analyse du code, détection des vulnérabilités, construction de l’image Docker, tests de sécurité et déploiement. Des contrôles de sécurité sont intégrés au pipeline CI/CD afin d’identifier les risques avant la mise en production.
 
-### `npm start`
+## 🏗️ Architecture
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```mermaid
+flowchart LR
+    A["Développeur<br/>git push"] --> B["Dépôt GitHub"]
+    B --> C["GitHub Actions<br/>Pipeline CI/CD"]
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+    C --> D["Détection de secrets<br/>Gitleaks"]
+    C --> E["Analyse de sécurité<br/>Trivy + Semgrep"]
+    C --> F["Build et publication<br/>Docker + Docker Hub"]
 
-### `npm test`
+    F --> G["Tests de sécurité dynamiques<br/>OWASP ZAP"]
+    G --> H["Déploiement Kubernetes<br/>Minikube"]
+    H --> I["Supervision<br/>Prometheus + Grafana"]
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+    style D fill:#f9f,stroke:#333
+    style E fill:#f9f,stroke:#333
+    style G fill:#f9f,stroke:#333
+```
 
-### `npm run build`
+## 🔐 Étapes du pipeline DevSecOps
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+| Étape | Outil(s) | Description |
+|---|---|---|
+| Intégration continue | GitHub Actions | Automatise l’exécution des différentes étapes du pipeline. |
+| Détection de secrets | Gitleaks | Recherche les secrets potentiellement exposés dans le dépôt Git. |
+| Analyse des vulnérabilités | Trivy | Analyse les images conteneurisées et les dépendances prises en charge afin d’identifier les vulnérabilités. |
+| Analyse statique du code | Semgrep | Détecte des problèmes de sécurité et des motifs de code potentiellement dangereux. |
+| Construction de l’image | Docker | Génère une image conteneurisée de l’application. |
+| Publication de l’image | Docker Hub | Héberge l’image Docker afin de permettre sa distribution. |
+| Tests de sécurité dynamiques | OWASP ZAP | Analyse l’application en fonctionnement pour rechercher des vulnérabilités web. |
+| Déploiement | Kubernetes, Minikube | Permet de déployer et d’exécuter l’application dans un environnement Kubernetes local. |
+| Supervision | Prometheus, Grafana | Permet de collecter et de visualiser des métriques de supervision, selon la configuration mise en place. |
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🧰 Technologies utilisées
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **Frontend :** React
+- **Serveur web :** Nginx
+- **CI/CD :** GitHub Actions
+- **Conteneurisation :** Docker
+- **Registre d’images :** Docker Hub
+- **Détection de secrets :** Gitleaks
+- **Analyse de sécurité :** Trivy, Semgrep
+- **Tests dynamiques :** OWASP ZAP
+- **Orchestration :** Kubernetes, Minikube
+- **Monitoring :** Prometheus, Grafana
 
-### `npm run eject`
+## 🎯 Objectifs du projet
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- Mettre en place un pipeline CI/CD automatisé.
+- Intégrer des contrôles de sécurité dès les premières étapes du développement.
+- Détecter les secrets exposés dans le code source.
+- Identifier les vulnérabilités potentielles du code, des dépendances et des images Docker.
+- Automatiser la construction et la publication des images conteneurisées.
+- Effectuer des tests de sécurité dynamiques sur l’application.
+- Déployer l’application sur un cluster Kubernetes local.
+- Préparer la supervision de l’environnement à l’aide de Prometheus et Grafana.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 📋 Prérequis
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Les outils suivants sont nécessaires pour reproduire l’environnement, selon les étapes que tu souhaites exécuter :
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- Git
+- Docker
+- Node.js et npm
+- Un compte GitHub
+- Un compte Docker Hub
+- Minikube
+- kubectl
 
-## Learn More
+Les outils de sécurité et de supervision doivent également être installés ou configurés dans le pipeline et dans l’environnement de déploiement.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 🚀 Vue d’ensemble du fonctionnement
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+1. Le développeur apporte des modifications au code et les pousse vers le dépôt GitHub.
+2. GitHub Actions déclenche le pipeline CI/CD.
+3. Gitleaks recherche les secrets potentiellement exposés.
+4. Trivy et Semgrep effectuent les analyses de sécurité configurées.
+5. Docker construit l’image de l’application et la publie sur Docker Hub si les étapes précédentes et les conditions du pipeline le permettent.
+6. OWASP ZAP effectue les tests dynamiques sur une application accessible dans l’environnement de test prévu.
+7. L’application est déployée sur Kubernetes à l’aide de Minikube.
+8. Prometheus et Grafana peuvent être utilisés pour la supervision lorsque leur configuration est opérationnelle.
 
-### Code Splitting
+## 🛡️ Sécurité du pipeline
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+L’approche DevSecOps vise à intégrer la sécurité au cycle de développement plutôt qu’à la traiter uniquement à la fin du projet.
 
-### Analyzing the Bundle Size
+Les contrôles peuvent être configurés pour interrompre le pipeline lorsqu’un secret est détecté ou lorsqu’une vulnérabilité répond à des critères de blocage définis.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+**Important :** la détection d’un problème ne bloque pas automatiquement une livraison. Ce comportement dépend des règles, des seuils et des conditions configurés dans les workflows GitHub Actions.
 
-### Making a Progressive Web App
+## 📌 État du projet
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Ce dépôt présente l’architecture et les objectifs du projet ShopSecure. Les étapes réellement opérationnelles dépendent des fichiers de configuration, des workflows CI/CD et des manifestes Kubernetes présents dans le dépôt.
 
-### Advanced Configuration
+Les fonctionnalités de build, de scan, de déploiement et de supervision doivent être vérifiées dans l’environnement avant d’être considérées comme opérationnelles.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## 📄 Licence
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Aucune licence n’est spécifiée dans cette documentation. Si le projet doit être distribué publiquement, ajoute un fichier `LICENSE` correspondant à la licence choisie.
