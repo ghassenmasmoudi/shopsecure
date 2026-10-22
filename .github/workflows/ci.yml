@@ -117,7 +117,7 @@ jobs:
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803  # v6
 
       - name: Run OWASP ZAP Baseline Scan
-        uses: zaproxy/action-baseline@v0.14.0
+        uses: zaproxy/action-baseline@v7c4deb10e6261301961c86d65d54a516394f9aed
         with:
           target: 'https://www.example.com'  # ⚠️ À remplacer par votre URL
           rules_file_name: '.zap/rules.tsv'
